@@ -14,6 +14,7 @@ args = parser.parse_args()
 
 rng = default_rng(args.randomSeed)
 probabilities = []
+rewardList = [0, 1]
 N = 0
 
 """
@@ -22,8 +23,11 @@ Generate reward
 ==================================================================
 """
 def gen_reward(arm):
-    global probabilities
-    reward = rng.choice([0, 1],p=[1-probabilities[arm], probabilities[arm]])
+    global probabilities, rewardList
+    if args.algorithm == "alg-t3" or args.algorithm == "alg-t4":
+        reward = rng.choice(rewardList, p=probabilities[arm])
+    else:
+        reward = rng.choice(rewardList, p=[1-probabilities[arm], probabilities[arm]])
     return reward    
 
 """
@@ -57,6 +61,8 @@ UCB Algorithm
 """
 def ucb(horizon=args.horizon, c=args.scale):
     global N
+    if args.algorithm=="ucb-t1":
+        c = 2
     empMeans = np.zeros(N)
     numSamples = np.ones(N)
     cumulativeReward = 0
@@ -130,7 +136,7 @@ def kl_ucb(horizon=args.horizon):
 Thompson-Sampling
 ==================================================================
 """
-def thompson_sampling():
+def thompson_sampling(horizon=args.horizon):
     global N
     successes = np.zeros(N)
     failures = np.ones(N)
@@ -148,13 +154,80 @@ def thompson_sampling():
     
     return cumulativeReward
 
+"""
+==================================================================
+Algorithm Task 3: Adapted Thompson Sampling for this
+==================================================================
+"""
+def alg_t3(horizon=args.horizon):
+    global N, rewardList
+    
+    M = len(rewardList)
+    cumulativeReward = 0
+    armweights = [None]*N                                     # L_k
+    indexHelper = dict.fromkeys(rewardList)
+    for i, r in enumerate(rewardList):
+        indexHelper[r] = i
+    rewardcounts = [[1 for _ in range(M)] for _ in range(N)]  # \alpha_m^k 
 
+    for t in range(horizon):
+        for i in range(N):      # In each arm
+            armweights[i] = rng.dirichlet(rewardcounts[i]) # multivariate beta distribution
+        armToPull = np.argmax(np.array(armweights) @ np.array(rewardList))
+        reward = gen_reward(armToPull)
+        rewardcounts[armToPull][indexHelper[reward]] += 1
+        cumulativeReward += reward
+
+    return cumulativeReward
+
+"""
+==================================================================
+Algorithm Task 4: Adapted Thompson Sampling for this
+==================================================================
+"""
+def alg_t4(horizon=args.horizon, threshold=args.threshold):
+    global N, rewardList
+    
+    M = len(rewardList)
+    highs = 0
+    cumulativeReward = 0
+
+    threshedRewardList = np.zeros_like(rewardList)
+    threshedRewardList[np.array(rewardList) > threshold] = 1
+    threshedRewardList[np.array(rewardList) <= threshold] = 0
+    
+    armweights = [None]*N                                     # L_k
+    indexHelper = dict.fromkeys(rewardList)
+    for i, r in enumerate(rewardList):
+        indexHelper[r] = i
+    rewardcounts = [[1 for _ in range(M)] for _ in range(N)]  # \alpha_m^k 
+
+    for t in range(horizon):
+        for i in range(N):      # In each arm
+            armweights[i] = rng.dirichlet(rewardcounts[i]) # multivariate beta distribution
+        armToPull = np.argmax(np.array(armweights) @ threshedRewardList)
+        reward = gen_reward(armToPull)
+        rewardcounts[armToPull][indexHelper[reward]] += 1
+        if reward > threshold:
+            highs += 1
+        cumulativeReward += reward
+
+    return cumulativeReward, highs
+
+"""
+==================================================================
+MAIN: Parsing and stuff
+==================================================================
+"""
 if __name__=="__main__":
     algTofuncMap = {
         "epsilon-greedy-t1": epsilon_greedy3,
         "ucb-t1": ucb,
         "kl-ucb-t1": kl_ucb,
         "thompson-sampling-t1": thompson_sampling,
+        "ucb-t2": ucb,
+        "alg-t3": alg_t3,
+        "alg-t4": alg_t4,
     }
 
     instance = args.instance
@@ -173,17 +246,28 @@ if __name__=="__main__":
     threshold = args.threshold
     horizon = args.horizon
 
-    with open(instance) as file:
-        lines = file.readlines()
-        probs = [float(line.rstrip()) for line in lines] # Now, probs contains the list of probabilities
+    if algorithm=="alg-t3" or algorithm=="alg-t4":
+        with open(instance) as file:
+            lines = file.readlines()
+            rewardList = [float(item) for item in lines[0].split(' ')]
+            probs = [[float(item) for item in line.split(' ')] for line in lines[1:]]
+    else:
+        with open(instance) as file:
+            lines = file.readlines()
+            probs = [float(line.rstrip()) for line in lines] # Now, probs contains the list of probabilities
     ## SETUP THE GLOBAL VARS
     probabilities = probs
     N = len(probs) 
-
-    REW = algTofuncMap[algorithm]() # REW
-    REG = np.max(probs)*args.horizon - REW
-
+    
     HIGHS = 0 # specific to Task 4
 
+    REW = algTofuncMap[algorithm]() # REW
+    if algorithm=="alg-t4":
+        REW, HIGHS = REW
+    if algorithm=="alg-t3" or algorithm=="alg-t4":
+        REG = np.max(np.dot(np.array(rewardList), np.array(probabilities).T))*args.horizon - REW
+    else:
+        REG = np.max(probs)*args.horizon - REW
+
     list_print = [instance, algorithm, randomSeed, epsilon, scale, threshold, horizon, REG, HIGHS]
-    print(','.join(str(item) for item in list_print), end='\n')
+    print(', '.join(str(item) for item in list_print), end='\n')
