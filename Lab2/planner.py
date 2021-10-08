@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser(description='MDP Instance')
 parser.add_argument('--mdp', type=str,
                     help='followed by a path to the input MDP file')
 parser.add_argument('--algorithm', type=str,
-                    help='followed by one of vi, hpi, and lp.', default='vi')
+                    help='followed by one of vi, hpi, and lp.', default='hpi')
 args = parser.parse_args()
 
 
@@ -37,7 +37,7 @@ class MDPPlanner:
                     self.MDP_TRANSITIONS[int(splits[1])][int(splits[2])].append((int(splits[3]), float(splits[4]), float(splits[5])))
 
 
-    def valueIteration(self, tol=1e-4):
+    def valueIteration(self, tol=1e-8):
         ns = self.MDP_DETAILS["numStates"]
         na = self.MDP_DETAILS["numActions"]
         gamma = self.MDP_DETAILS["discount"]
@@ -153,6 +153,5 @@ if __name__ == "__main__":
         pi, V = obj.howardsPolicyIteration()
     elif algorithm == "lp":
         pi, V = obj.lpFormulation()
-    else:
-        pi, V = obj.howardsPolicyIteration() # BY DEFAULT 
+        
     obj.printOutput(pi, V)
