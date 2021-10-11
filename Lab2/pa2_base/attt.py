@@ -1,7 +1,7 @@
 import argparse
 import numpy as np
 
-np.random.seed(0)
+#np.random.seed(0)
 
 BLANK = 0
 grid = np.zeros((3,3), dtype=int)
@@ -18,6 +18,7 @@ def get_args():
     
     parser.add_argument('-p1', help='Policy file for player 1')
     parser.add_argument('-p2', help='Policy file for player 2')
+    parser.add_argument('-rs', help='Random seed')
     return vars(parser.parse_args())
 
 def rep(grid):
@@ -158,6 +159,7 @@ if __name__ == '__main__':
         print(args["p2"])
         p2_policy = get_policy(args["p2"])
         auto_p2 = True
+    np.random.seed(int(args["rs"]))
 
     # p2_policy = get_policy('unif_rand_p2_policy')
     # auto_p2=True
