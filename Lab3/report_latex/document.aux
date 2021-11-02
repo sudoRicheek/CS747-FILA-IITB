@@ -1,0 +1,29 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}\texttt  {Task 1: "Tabular" Sarsa}}{2}{section.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Tabular Sarsa(0) with $\epsilon =0.08$ and $\eta _{\tmspace  +\thinmuskip {.1667em}lr}=0.18$, i.e. it explores with $\epsilon $ probability and exploits with $1 - \epsilon $. In this case to discretize the state space we divide the entire range of positions and velocities into 50 uniform partitions. We return a \textbf  {one-hot encoding} of the enabled partition index in the \mintinline [bgcolor=violet, frame=lines, framesep=2mm]{python}{get_table_features()} function.\relax }}{2}{figure.caption.2}\protected@file@percent }
+\gdef\minted@oldcachelist{,
+  default-pyg-prefix.pygstyle,
+  monokai.pygstyle,
+  1598347CD3E19BE94227CE58FE2B35321C007370217B166059FECBD3DC7D52DE.pygtex,
+  1598347CD3E19BE94227CE58FE2B35321C007370217B166059FECBD3DC7D52DE.pygtex,
+  8CC31B6D0D5953653137CB9BEE3F0CE21C007370217B166059FECBD3DC7D52DE.pygtex,
+  8CC31B6D0D5953653137CB9BEE3F0CE21C007370217B166059FECBD3DC7D52DE.pygtex}
+\@writefile{toc}{\contentsline {section}{\numberline {2}\texttt  {Task 2: Sarsa with Linear Function Approximation}}{3}{section.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces  Sarsa(0) linear function approximation with RBF kernel. $\epsilon =0.05$ and $\eta _{\tmspace  +\thinmuskip {.1667em}lr}=0.18$. In this case we discretize the space with the same idea as before, i.e. 20 uniform partitions of the entire range of position and velocity. In this case instead of returning a one-hot encoding of the enabled partition index, we apply an $\mathbf  {RBF}$ kernel on it. It is intuitive to provide some importance to the neighbouring $\mathbf  {(x,v)}$ blocks (since we may want to assume, there won't be any drastic changes if the position or velocity of the car is changed slightly!). This sort of gives us a smoothened version of the one-hot encoding, which we return from the \mintinline [bgcolor=violet,frame=lines, framesep=2mm]{python}{get_better_features()} function.\relax }}{3}{figure.caption.3}\protected@file@percent }

@@ -1,0 +1,43 @@
+Description
+------------
+
+In this assignment we aim to solve a very famous reinforcement learning 
+environment, the Mountain Car (https://gym.openai.com/envs/MountainCar-v0/).
+You can go through the aforementioned link to get a good idea about the 
+problem setting.
+
+In the two tasks we explore the different ways we can exploit the structure
+in continuous state space to formulate a discrete state space which can 
+capture most of the essential information. We try out Tabular Sarsa(0) and 
+Linear Function approximation with Sarsa and RBF kernel.
+
+
+How to run?
+------------
+    ------------------------------------------------------------
+    | Task1: Tabular Sarsa(0) with uniform discretization ---> |
+    ------------------------------------------------------------
+    -   The following command generates the npy file of weights and a plot
+        of the training rewards:
+
+            python mountain_car.py --task T1 --train 1
+
+    -   The following command runs the test code, that is generates the mean
+        reward over a 100 episode test run:
+
+            python mountain_car.py --task T1 --train 0
+    
+    
+    --------------------------------------------------------------------------
+    | Task2: Linear Function approximation with Sarsa(0) and RBF kernel ---> |
+    --------------------------------------------------------------------------
+    -   The following command generates the npy file of weights and a plot
+        of the training rewards:
+
+            python mountain_car.py --task T2 --train 1
+
+    -   The following command runs the test code, that is generates the mean
+        reward over a 100 episode test run:
+
+            python mountain_car.py --task T2 --train 0
+    
