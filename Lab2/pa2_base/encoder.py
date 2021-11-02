@@ -89,3 +89,4 @@ if __name__=="__main__":
     obj = Encoder(policyFile, statesFile)
     obj.parseFiles()
     obj.formulateMDP()
+    
